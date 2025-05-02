@@ -30,6 +30,13 @@ class CustomerPresenter: CustomerContract.Presenter {
         customer.name = changeCustomer
     }
 
+    override fun deleteCustomer(id: String) {
+        val customer = customers.find { it.id == CustomerId(id) }?.apply { customers.remove(this) }
+            ?: throw IllegalArgumentException("아이디 못찾음 에러")
+
+        println("[INFO] 고객 삭제 성공: ID: ${customer.id.id} | 이름: ${customer.name.id}")
+    }
+
     override fun inquiryCustomer() {
         val customerCount = customers.size
 
@@ -39,10 +46,6 @@ class CustomerPresenter: CustomerContract.Presenter {
             println("${index + 1}. ID: ${customer.id.id} | 이름: ${customer.name.id.padStart(4)} | 상태: ${customer.status}")
         }
         println()
-    }
-
-    override fun deleteCustomer(id: String) {
-        TODO("Not yet implemented")
     }
 
     private fun scenario() {
