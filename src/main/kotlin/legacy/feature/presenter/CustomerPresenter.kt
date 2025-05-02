@@ -18,16 +18,22 @@ class CustomerPresenter: CustomerContract.Presenter {
         println("[INFO] 고객 등록 성공: ID: $id | 이름: ${name.padStart(4)} | 상태: $status")
     }
 
+    override fun inquiryCustomer() {
+        val customerCount = customers.size
+
+        println("\n----- 고객 조회 결과 -----")
+        println("총 고객 수: $customerCount")
+        for ((index, customer) in customers.withIndex()) {
+            println("${index + 1}. ID: ${customer.id.id} | 이름: ${customer.name.id.padStart(4)} | 상태: ${customer.status}")
+        }
+        println()
+    }
 
     override fun updateCustomer(id: String, newName: String) {
         TODO("Not yet implemented")
     }
 
     override fun deleteCustomer(id: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun inquiryCustomer() {
         TODO("Not yet implemented")
     }
 
