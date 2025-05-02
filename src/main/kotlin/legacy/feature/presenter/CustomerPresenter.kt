@@ -5,6 +5,7 @@ import legacy.data.model.CustomerId
 import legacy.data.model.CustomerName
 import legacy.data.model.CustomerState
 import legacy.feature.contract.CustomerContract
+import kotlin.properties.Delegates
 
 class CustomerPresenter: CustomerContract.Presenter {
     private val customers = mutableListOf<Customer>()
@@ -18,6 +19,17 @@ class CustomerPresenter: CustomerContract.Presenter {
         println("[INFO] 고객 등록 성공: ID: $id | 이름: ${name.padStart(4)} | 상태: $status")
     }
 
+    override fun updateCustomer(id: String, newName: String) {
+        val customer = customers.find { it.id == CustomerId(id) }
+            ?: throw IllegalArgumentException("아이디 못찾음 에러")
+
+        var changeCustomer by Delegates.observable(customer.name) { _, oldName, newName ->
+            println("[INFO] 고객 수정 성공: ${oldName.id} -> ${newName.id}")
+        }
+        changeCustomer = CustomerName(newName)
+        customer.name = changeCustomer
+    }
+
     override fun inquiryCustomer() {
         val customerCount = customers.size
 
@@ -27,10 +39,6 @@ class CustomerPresenter: CustomerContract.Presenter {
             println("${index + 1}. ID: ${customer.id.id} | 이름: ${customer.name.id.padStart(4)} | 상태: ${customer.status}")
         }
         println()
-    }
-
-    override fun updateCustomer(id: String, newName: String) {
-        TODO("Not yet implemented")
     }
 
     override fun deleteCustomer(id: String) {
