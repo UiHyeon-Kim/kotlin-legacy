@@ -22,7 +22,8 @@ class CustomerPresenter(
     }
 
     override fun updateCustomer(id: String, newName: String) {
-        val customer = repository.selectCustomer(id)
+        val customer = repository.selectCustomer(id) ?: throw IllegalArgumentException(ERROR_ID_NOT_FOUND_MESSAGE)
+
         var changeCustomer by Delegates.observable(customer.name.id) { _, oldName, newName ->
             customerView.printCustomerUpdateMessage(customer.id.id, oldName, newName)
         }
@@ -32,7 +33,8 @@ class CustomerPresenter(
 
     override fun deleteCustomer(id: String) {
         val customer = repository.selectCustomer(id)
-            .apply { repository.deleteCustomer(this) }
+            ?.apply { repository.deleteCustomer(this) }
+            ?: throw IllegalArgumentException(ERROR_ID_NOT_FOUND_MESSAGE)
 
         customerView.printCustomerDeleteMessage(id, customer.name.id)
     }
@@ -52,5 +54,11 @@ class CustomerPresenter(
         updateCustomer("101", "홍길순")
         deleteCustomer("104")
         inquiryCustomer()
+    }
+
+    companion object {
+        private const val ERROR = "[ERROR]"
+
+        private const val ERROR_ID_NOT_FOUND_MESSAGE = "$ERROR 아이디를 찾을 수 없습니다."
     }
 }

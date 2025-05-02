@@ -13,15 +13,15 @@ class CustomerRepositoryImpl : CustomerRepository {
     }
 
     override fun updateCustomer(id: String, name: String) {
-        selectCustomer(id).name = CustomerName(name)
+        selectCustomer(id)?.name = CustomerName(name)
     }
 
     override fun deleteCustomer(customer: Customer) {
         customers.remove(customer)
     }
 
-    override fun selectCustomer(id: String): Customer =
-        customers.find { it.id == CustomerId(id) } ?: throw IllegalArgumentException("[ERROR] 아이디를 찾을 수 없습니다.")
+    override fun selectCustomer(id: String): Customer? =
+        customers.find { it.id == CustomerId(id) }
 
 
     override fun getCustomers(): List<Customer> = customers.toList()
