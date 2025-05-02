@@ -1,6 +1,7 @@
 package legacy.feature.contract
 
 import legacy.data.model.Customer
+import legacy.data.model.CustomerState
 
 interface CustomerContract {
     interface View {
@@ -13,7 +14,7 @@ interface CustomerContract {
 
     interface Presenter {
         fun execute()
-        fun registerCustomer(customer: Customer)
+        fun registerCustomer(id: String, name: String, status: CustomerState)
         fun updateCustomer(id: String, newName: String)
         fun deleteCustomer(id: String)
         fun inquiryCustomer()
