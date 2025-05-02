@@ -1,51 +1,45 @@
 package legacy.feature.presenter
 
-import legacy.data.model.Customer
-import legacy.data.model.CustomerId
-import legacy.data.model.CustomerName
 import legacy.data.model.CustomerState
+import legacy.data.repository.CustomerRepository
 import legacy.feature.contract.CustomerContract
 import kotlin.properties.Delegates
 
-class CustomerPresenter: CustomerContract.Presenter {
-    private val customers = mutableListOf<Customer>()
+class CustomerPresenter(
+    private val customerView: CustomerContract.View,
+    private val repository: CustomerRepository
+) : CustomerContract.Presenter {
     override fun execute() {
-        println("===== 고객 관리 시스템 실행 =====\n")
+        customerView.printSystemExecutionMessage()
         scenario()
+
+        // TODO 추가 기능 구현 예정
     }
 
     override fun registerCustomer(id: String, name: String, status: CustomerState) {
-        customers.add(Customer(CustomerId(id), CustomerName(name), status))
-        println("[INFO] 고객 등록 성공: ID: $id | 이름: ${name.padStart(4)} | 상태: $status")
+        repository.insertCustomer(id, name, status)
+        customerView.printCustomerAddMessage(id, name, status)
     }
 
     override fun updateCustomer(id: String, newName: String) {
-        val customer = customers.find { it.id == CustomerId(id) }
-            ?: throw IllegalArgumentException("아이디 못찾음 에러")
-
-        var changeCustomer by Delegates.observable(customer.name) { _, oldName, newName ->
-            println("[INFO] 고객 수정 성공: ${oldName.id} -> ${newName.id}")
+        val customer = repository.selectCustomer(id)
+        var changeCustomer by Delegates.observable(customer.name.id) { _, oldName, newName ->
+            customerView.printCustomerUpdateMessage(customer.id.id, oldName, newName)
         }
-        changeCustomer = CustomerName(newName)
-        customer.name = changeCustomer
+        changeCustomer = newName
+        repository.updateCustomer(id, changeCustomer)
     }
 
     override fun deleteCustomer(id: String) {
-        val customer = customers.find { it.id == CustomerId(id) }?.apply { customers.remove(this) }
-            ?: throw IllegalArgumentException("아이디 못찾음 에러")
+        val customer = repository.selectCustomer(id)
+            .apply { repository.deleteCustomer(this) }
 
-        println("[INFO] 고객 삭제 성공: ID: ${customer.id.id} | 이름: ${customer.name.id}")
+        customerView.printCustomerDeleteMessage(id, customer.name.id)
     }
 
     override fun inquiryCustomer() {
-        val customerCount = customers.size
-
-        println("\n----- 고객 조회 결과 -----")
-        println("총 고객 수: $customerCount")
-        for ((index, customer) in customers.withIndex()) {
-            println("${index + 1}. ID: ${customer.id.id} | 이름: ${customer.name.id.padStart(4)} | 상태: ${customer.status}")
-        }
-        println()
+        val customers = repository.getCustomers()
+        customerView.printCustomerInquiryMessage(customers)
     }
 
     private fun scenario() {
