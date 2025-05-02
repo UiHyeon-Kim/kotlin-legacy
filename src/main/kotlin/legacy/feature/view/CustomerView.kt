@@ -28,31 +28,19 @@ class CustomerView : CustomerContract.View {
     override fun printCustomerInquiryMessage(customers: List<Customer>) {
         val customerCount = customers.size
 
-        println("----- 고객 조회 결과 -----")
+        println("\n----- 고객 조회 결과 -----")
         println("총 고객 수: $customerCount")
-
         for ((index, customer) in customers.withIndex()) {
             print("${index + 1}. ")
-            printCustomer(customer)
+            printCustomer(customer.id.id, customer.name.id, customer.status)
         }
+        println()
     }
 
-    override fun printCustomerAddMessage(customer: Customer) {
-        print("[INFO] 고객 등록 성공: ")
-
-    }
-
-    override fun printCustomerUpdateMessage(customer: Customer) {
-        print("[INFO] 고객 수정 성공: ")
-
-    }
-
-    override fun printCustomerDeleteMessage(customer: Customer) {
-        print("[INFO] 고객 삭제 성공: ")
-
-    }
-
-    private fun printCustomer(customer: Customer) {
-        println("ID: ${customer.id} | 이름: ${customer.name} | 상태: ${customer.status}")
+    private fun printCustomer(id: String, name: String, status: CustomerState? = null) {
+        when (status) {
+            null -> println("ID: $id | 이름: $name")
+            else -> println("ID: $id | 이름: $name | 상태: $status")
+        }
     }
 }
