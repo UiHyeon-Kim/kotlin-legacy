@@ -6,10 +6,10 @@ import legacy.data.model.CustomerState
 interface CustomerContract {
     interface View {
         fun printSystemExecutionMessage()
+        fun printCustomerAddMessage(id: String, name: String, status: CustomerState)
+        fun printCustomerUpdateMessage(id: String, oldName: String, newName: String)
+        fun printCustomerDeleteMessage(id: String, name: String)
         fun printCustomerInquiryMessage(customers: List<Customer>)
-        fun printCustomerAddMessage(customer: Customer)
-        fun printCustomerUpdateMessage(customer: Customer)
-        fun printCustomerDeleteMessage(customer: Customer)
     }
 
     interface Presenter {
