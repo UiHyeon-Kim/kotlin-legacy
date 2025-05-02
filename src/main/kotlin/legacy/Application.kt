@@ -1,6 +1,8 @@
 package legacy
 
+import legacy.feature.presenter.CustomerPresenter
+
 fun main() {
-    val customerService = CustomerService()
-    customerService.run()
+    val customerPresenter = CustomerPresenter()
+    customerPresenter.execute()
 }
